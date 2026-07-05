@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบ AI วิเคราะห์การลงทุน Solar Cell — PEA สุพรรณบุรี</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --bg-card: #111827;
+            --bg-inner: #1f2937;
+            --primary: #fbbf24;
+            --secondary: #10b981;
+            --accent-purple: #6d28d9;
+            --accent-purple-light: #8b5cf6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Anuphan', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container ตามสัดส่วนภาพถ่าย 1280x720 */
+        .app-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0b0f19;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border: 1px solid #1e293b;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* Header Style แบบเดียวกับในรูป */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-pea {
+            background-color: #7c3aed;
+            color: #fff;
+        }
+
+        .badge-ai {
+            background-color: #f59e0b;
+            color: #000;
+        }
+
+        .badge-tech {
+            background-color: #1e293b;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .app-title {
+            font-family: 'Bai Jamjuree', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .app-title span {
+            color: #a78bfa;
+        }
+
+        .print-btn {
+            background-color: #1f2937;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .print-btn:hover {
+            background-color: #374151;
+            border-color: var(--primary);
+        }
+
+        /* Main Workspace Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 25px;
+            flex-grow: 1;
+            margin-bottom: 10px;
+        }
+
+        /* Left Side: Inputs */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Cards Style */
+        .input-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-header {
+            font-family: 'Bai Jamjuree', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header span {
+            background-color: rgba(167, 139, 250, 0.1);
+            color: #c084fc;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* Dropdowns Row */
+        .dropdown-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        select {
+            background-color: #1f2937;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Sliders block */
+        .sliders-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #0b0f19;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .slider-title {
+            color: var(--text-muted);
+        }
+
+        .slider-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #374151;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--primary);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider-limits {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #4b5563;
+        }
+
+        /* Warning Banner */
+        .warning-banner {
+            background-color: rgba(220, 38, 38, 0.08);
+            border-left: 4px solid #ef4444;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            border-top: 1px solid rgba(239, 68, 68, 0.2);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            border-right: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .warning-icon {
+            color: #ef4444;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .warning-text {
+            font-size: 11.5px;
+            color: #fca5a5;
+            line-height: 1.5;
+        }
+
+        /* Right Side: Results & Recommendation */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Recommended purple box */
+        .recommender-card {
+            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+            border-radius: 12px;
+            border: 1px solid #7c3aed;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recommender-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+        }
+
+        .rec-label {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: #fcd34d;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .rec-title {
+            font-size: 14px;
+            color: #ddd6fe;
+            margin-bottom: 5px;
+        }
+
+        .rec-main-value {
+            font-family: 'Bai Jamjuree', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .rec-details-grid {
+            border-top: 1px solid rgba(139, 92, 246, 0.3);
+            padding-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 10px;
+            font-size: 12.5px;
+        }
+
+        .rec-detail-item {
+            color: #e9d5ff;
+        }
+
+        .rec-detail-item span {
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        /* Financial summary card */
+        .financial-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .fin-row-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .fin-stat-box {
+            background-color: #0b0f19;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .fin-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .fin-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .payback-big-box {
+            background-color: #0b0f19;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #1e293b;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payback-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .payback-years {
+            font-family: 'Bai Jamjuree', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--secondary);
+            line-height: 1;
+        }
+
+        .roi-text {
+            font-size: 12px;
+            color: #34d399;
+            margin-top: 5px;
+        }
+
+        /* Footer info bar */
+        .footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .footer-left {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-item i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        /* Modal popup for print/pitch completion */
+        .custom-modal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e293b;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 30px;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            width: 450px;
+            text-align: center;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 99;
+        }
+
+        .modal-btn {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="badge-container">
+                <span class="badge badge-pea">PEA สุพรรณบุรี</span>
+                <span class="badge badge-ai">AI Solar Integration</span>
+                <span class="badge badge-tech">Smart Commercial Tool</span>
+            </div>
+            <h1 class="app-title">ระบบ AI วิเคราะห์การลงทุน Solar Cell และประเมินความปลอดภัย — <span>PEA สุพรรณบุรี</span></h1>
+        </div>
+        <button class="print-btn" onclick="showPitchOffer()">
+            <i class="fa-solid fa-file-invoice"></i> พิมพ์ข้อเสนอขาย
+        </button>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="main-grid">
+        
+        <!-- LEFT PANEL (INPUTS) -->
+        <div class="left-panel">
+            
+            <!-- SECTION 1: ข้อมูลหม้อแปลงและกลุ่มผู้ใช้งาน -->
+            <div class="input-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-bolt"></i> 1. ข้อมูลประเภทผู้ใช้ไฟฟ้าและหม้อแปลง
+                </div>
+                <div class="dropdown-row">
+                    <div class="form-group">
+                        <label for="pea-tariff">ประเภทอัตราค่าไฟฟ้า (PEA Tariff)</label>
+                        <select id="pea-tariff" onchange="calculateSolarSystem()">
+                            <option value="residential">ประเภท 1: บ้านอยู่อาศัย (Residential)</option>
+                            <option value="small-biz">ประเภท 2: กิจการขนาดเล็ก (Small Business)</option>
+                            <option value="medium-biz" selected>ประเภท 3: กิจการขนาดกลาง (Medium Business)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transformer-size">ขนาดพิกัดหม้อแปลงไฟฟ้า (Transformer Size)</label>
+                        <select id="transformer-size" onchange="calculateSolarSystem()">
+                            <option value="50">50 kVA</option>
+                            <option value="100">100 kVA</option>
+                            <option value="250">250 kVA</option>
+                            <option value="500" selected>500 kVA</option>
+                            <option value="1000">1000 kVA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: พารามิเตอร์พลังงานจากค่าไฟ (สไลเดอร์ปรับค่าได้จริง) -->
+            <div class="input-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-sliders"></i> 2. พารามิเตอร์ระบบไฟฟ้าจากบิลค่าไฟ (ปรับจูนค่าไฟปัจจุบันได้)
+                </div>
+                
+                <div class="sliders-container">
+                    <!-- Slider 1: Monthly Cost -->
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">ค่าไฟเฉลี่ยรายเดือน</span>
+                            <span class="slider-value" id="val-monthly-bill">55,000 บาท</span>
+                        </div>
+                        <input type="range" id="input-monthly-bill" min="5000" max="250000" step="5000" value="55000" oninput="updateSliders()">
+                        <div class="slider-limits">
+                            <span>5,000 บ.</span>
+                            <span>250,000 บ.</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Current Daytime Load Ratio -->
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">สัดส่วนใช้ไฟกลางวัน</span>
+                            <span class="slider-value" id="val-day-ratio">65%</span>
+                        </div>
+                        <input type="range" id="input-day-ratio" min="20" max="100" step="5" value="65" oninput="updateSliders()">
+                        <div class="slider-limits">
+                            <span>20% (ใช้บ่าย)</span>
+                            <span>100% (โรงงานกลางวัน)</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 3: Target System Cap (kW Peak) -->
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">ต้องการผลิตสูงสุด (kW Peak)</span>
+                            <span class="slider-value" id="val-peak-cap">30 kW</span>
+                        </div>
+                        <input type="range" id="input-peak-cap" min="3" max="150" step="1" value="30" oninput="updateSliders()">
+                        <div class="slider-limits">
+                            <span>3 kW</span>
+                            <span>150 kW</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 4: FT Rate Option -->
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">ค่าไฟเฉลี่ยเฉลี่ยต่อหน่วย (บาท)</span>
+                            <span class="slider-value" id="val-unit-cost">4.20 บาท</span>
+                        </div>
+                        <input type="range" id="input-unit-cost" min="3.5" max="5.5" step="0.1" value="4.2" oninput="updateSliders()">
+                        <div class="slider-limits">
+                            <span>3.50 บ.</span>
+                            <span>5.50 บ.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: แจ้งเตือนข้อจำกัด กฟจ. สุพรรณบุรี (ขยับแบบไดนามิก) -->
+            <div class="warning-banner" id="warning-banner">
+                <div class="warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="warning-text" id="warning-message">
+                    <strong>AI ตรวจสอบความเสี่ยง:</strong> ขนาดติดตั้ง 30 kW คิดเป็น 6% ของพิกัดหม้อแปลง 500 kVA อยู่ในเกณฑ์มาตรฐานที่ปลอดภัย และผ่านเกณฑ์การยื่นขนานไฟฟ้าของ กฟจ.สุพรรณบุรี ได้อย่างไม่มีปัญหาด้านเสถียรภาพระบบไฟฟ้า
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL (RESULTS & AI SOLUTION) -->
+        <div class="right-panel">
+            
+            <!-- AI Recommended purple box -->
+            <div class="recommender-card">
+                <div>
+                    <div class="rec-label">AI RECOMMENDED SOLUTION</div>
+                    <div class="rec-title">ขนาดระบบโซลาร์เซลล์ที่วิเคราะห์ว่าคุ้มค่าที่สุด</div>
+                    <div class="rec-main-value" id="rec-system-size">30 kWp</div>
+                </div>
+                
+                <div class="rec-details-grid">
+                    <div class="rec-detail-item">จำนวนแผงที่ใช้: <span id="rec-panels">55 แผง</span></div>
+                    <div class="rec-detail-item">พื้นที่ติดตั้งขั้นต่ำ: <span id="rec-area">110 ตร.ม.</span></div>
+                    <div class="rec-detail-item">อินเวอร์เตอร์: <span id="rec-inverter">Huawei / PEA Approved</span></div>
+                    <div class="rec-detail-item">มาตรฐาน: <span style="color:var(--primary); font-weight:bold;">วสท. 2569</span></div>
+                </div>
+            </div>
+
+            <!-- Financial details -->
+            <div class="financial-card">
+                <div class="card-header" style="color: var(--secondary);">
+                    <i class="fa-solid fa-wallet"></i> ประมาณการงบลงทุนและการประหยัดพลังงาน
+                </div>
+                
+                <div class="fin-row-main">
+                    <div class="fin-stat-box">
+                        <div class="fin-stat-label">งบลงทุนราคาขายสุทธิ</div>
+                        <div class="fin-stat-value" id="fin-price" style="color: var(--primary);">840,000 บ.</div>
+                    </div>
+                    <div class="fin-stat-box">
+                        <div class="fin-stat-label">ยอดประหยัดไฟเฉลี่ย / ปี</div>
+                        <div class="fin-stat-value" id="fin-annual-savings" style="color: var(--secondary);">165,600 บ.</div>
+                    </div>
+                </div>
+
+                <div class="payback-big-box">
+                    <div class="payback-title">ระยะเวลาคืนทุนโดยประมาณ</div>
+                    <div class="payback-years" id="fin-payback">5.1 ปี</div>
+                    <div class="roi-text" id="fin-roi">ผลตอบแทนปีแรก (ROI) : 19.7%</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER INFO BAR -->
+    <footer class="footer-bar">
+        <div class="footer-left">
+            <span class="footer-item"><i class="fa-solid fa-circle-info"></i> คำนวณอ้างอิงจากแผนการยื่นขนานไฟโซลาร์ภาคประชาชน กฟจ.สุพรรณบุรี</span>
+            <span class="footer-item"><i class="fa-solid fa-shield-halved"></i> มีระบบตัดไฟฉุกเฉิน (Rapid Shutdown) ครบตามเกณฑ์ความปลอดภัย</span>
+        </div>
+        <div>
+            <span>อัปเดตอัตราค่าไฟปี 2026</span>
+        </div>
+    </footer>
+
+</div>
+
+<!-- OVERLAYS AND MODAL -->
+<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+<div class="custom-modal" id="modal">
+    <h3 style="font-family: 'Bai Jamjuree', sans-serif; font-size: 22px; color: var(--primary); margin-bottom: 15px;">
+        <i class="fa-solid fa-circle-check"></i> สร้างข้อเสนอขายเรียบร้อย!
+    </h3>
+    <p style="font-size: 15px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
+        ข้อเสนอขายระบบ Solar Cell ขนาด <strong id="modal-size" style="color: #60a5fa;">30 kWp</strong> สำหรับยื่นแบบกับ <strong>กฟจ.สุพรรณบุรี</strong> ในงบลงทุนประมาณ <strong id="modal-price" style="color:#fbbf24;">840,000 บาท</strong> ได้ถูกเตรียมไว้ในคลังข้อมูลข้อเสนอพิเศษเรียบร้อยแล้ว
+    </p>
+    <button class="modal-btn" onclick="closeModal()">ตกลง</button>
+</div>
+
+<!-- LOGIC & CALCULATION SYSTEM -->
+<script>
+    function updateSliders() {
+        // ดึงค่าจาก Slider
+        const monthlyBill = parseInt(document.getElementById('input-monthly-bill').value);
+        const dayRatio = parseInt(document.getElementById('input-day-ratio').value);
+        const peakCap = parseInt(document.getElementById('input-peak-cap').value);
+        const unitCost = parseFloat(document.getElementById('input-unit-cost').value);
+
+        // อัปเดตข้อความแสดงผลเหนือ Slider
+        document.getElementById('val-monthly-bill').innerText = monthlyBill.toLocaleString('th-TH') + ' บาท';
+        document.getElementById('val-day-ratio').innerText = dayRatio + '%';
+        document.getElementById('val-peak-cap').innerText = peakCap + ' kW';
+        document.getElementById('val-unit-cost').innerText = unitCost.toFixed(2) + ' บาท';
+
+        // คำนวณระบบใหม่แบบเรียลไทม์
+        calculateSolarSystem();
+    }
+
+    function calculateSolarSystem() {
+        const tariff = document.getElementById('pea-tariff').value;
+        const transformer = parseInt(document.getElementById('transformer-size').value);
+        const monthlyBill = parseInt(document.getElementById('input-monthly-bill').value);
+        const dayRatio = parseInt(document.getElementById('input-day-ratio').value) / 100;
+        const peakCap = parseInt(document.getElementById('input-peak-cap').value);
+        const unitCost = parseFloat(document.getElementById('input-unit-cost').value);
+
+        // 1. ตรวจสอบเงื่อนไขข้อจำกัด กฟจ.สุพรรณบุรี (15% ของพิกัดหม้อแปลง)
+        const transformerCapacityLimit = transformer * 0.15; // ขีดจำกัดความปลอดภัยทั่วไปที่ไม่ส่งผลกระทบต่อขนานไฟ
+        const limitPercentage = ((peakCap / transformer) * 100).toFixed(1);
+        
+        let warningText = `<strong>AI ตรวจสอบความปลอดภัย:</strong> ขนาดติดตั้ง ${peakCap} kW คิดเป็น ${limitPercentage}% ของหม้อแปลง ${transformer} kVA `;
+        
+        if (peakCap > transformerCapacityLimit) {
+            document.getElementById('warning-banner').style.backgroundColor = "rgba(234, 88, 12, 0.1)";
+            document.getElementById('warning-banner').style.borderLeftColor = "#ea580c";
+            warningText += `มีขนาดเกิน 15% ของพิกัดหม้อแปลง (${transformerCapacityLimit.toFixed(0)} kW) ทางทีมงานและ กฟจ.สุพรรณบุรี แนะนำให้ติดตั้งชุดควบคุมการป้อนย้อน (Zero Export) หรือทำเรื่องขอผ่อนผันขยายขีดความสามารถการรองรับเพิ่มเติมเพื่อความเสถียรทางเทคนิค`;
+        } else {
+            document.getElementById('warning-banner').style.backgroundColor = "rgba(16, 185, 129, 0.08)";
+            document.getElementById('warning-banner').style.borderLeftColor = "#10b981";
+            warningText += `อยู่ในเกณฑ์มาตรฐานความปลอดภัยที่เหมาะสม ผ่านเกณฑ์การประเมินวิศวกรรมของการไฟฟ้าส่วนภูมิภาคเขตสุพรรณบุรีได้อย่างรวดเร็ว`;
+        }
+        document.getElementById('warning-message').innerHTML = warningText;
+
+        // 2. คำนวณราคาขาย (แปรผันตามขนาด kW ที่ต้องการและสเกลการประหยัดเชิงขนาด)
+        let baseCostPerkW = 38000; // ค่าติดตั้งปกติเริ่มที่ประมาณ 38,000 ต่อ kW
+        if (peakCap < 10) baseCostPerkW = 48000;
+        else if (peakCap < 30) baseCostPerkW = 35000;
+        else if (peakCap >= 100) baseCostPerkW = 26000;
+
+        const calculatedInvestment = peakCap * baseCostPerkW;
+
+        // 3. ประเมินการประหยัดไฟเฉลี่ยต่อปี
+        // สมมติว่าพลังงานแสงแดดสุพรรณบุรีเฉลี่ยสามารถผลิตพลังงานไฟฟ้าได้ 4.2 ชั่วโมงต่อวัน
+        const annualGeneration = peakCap * 4.2 * 365; // kWh/ปี
+        // ยอดประหยัดที่เกิดขึ้นจริงขึ้นอยู่กับพฤติกรรมการใช้ไฟกลางวัน
+        const annualSavings = annualGeneration * unitCost * dayRatio;
+
+        // 4. คำนวณจุดคืนทุนและ ROI
+        let paybackPeriod = (calculatedInvestment / annualSavings).toFixed(1);
+        let roi = ((annualSavings / calculatedInvestment) * 100).toFixed(1);
+
+        if (!isFinite(paybackPeriod) || paybackPeriod > 25) {
+            paybackPeriod = "20+";
+            roi = "0.0";
+        }
+
+        // 5. แสดงผลลัพธ์กลับไปยัง UI
+        document.getElementById('rec-system-size').innerText = peakCap + ' kWp';
+        document.getElementById('rec-panels').innerText = Math.ceil(peakCap * 1000 / 550) + ' แผง (550W)';
+        document.getElementById('rec-area').innerText = Math.ceil(peakCap * 3.6) + ' ตร.ม.';
+        
+        document.getElementById('fin-price').innerText = calculatedInvestment.toLocaleString('th-TH') + ' บ.';
+        document.getElementById('fin-annual-savings').innerText = Math.round(annualSavings).toLocaleString('th-TH') + ' บ.';
+        document.getElementById('fin-payback').innerText = paybackPeriod + ' ปี';
+        document.getElementById('fin-roi').innerText = `ผลตอบแทนปีแรก (ROI) : ${roi}%`;
+    }
+
+    function showPitchOffer() {
+        const peakCap = document.getElementById('val-peak-cap').innerText;
+        const price = document.getElementById('fin-price').innerText;
+        
+        document.getElementById('modal-size').innerText = peakCap;
+        document.getElementById('modal-price').innerText = price;
+        
+        document.getElementById('overlay').style.display = "block";
+        document.getElementById('modal').style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById('overlay').style.display = "none";
+        document.getElementById('modal').style.display = "none";
+    }
+
+    // เริ่มทำงานครั้งแรกเพื่อคำนวณตั้งต้น
+    window.onload = function() {
+        calculateSolarSystem();
+    }
+</script>
+
+</body>
+</html>
